@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain;
+using FluentValidation;
 using MediatR;
 using Persistence;
 
@@ -16,6 +17,14 @@ namespace Application.Activities
 
         }
 
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.activity).SetValidator(new ActivityValidator());
+            }
+        }
         public class Handler : IRequestHandler<Command>
         {
             private readonly DataContext datacontext;
