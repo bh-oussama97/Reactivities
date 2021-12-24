@@ -17,16 +17,16 @@ namespace API.Controllers
   
         [HttpGet]
 
-        public async Task<ActionResult<List<Activity>>> GetActivities()
+        public async Task<IActionResult> GetActivities()
         {
-            return await Mediator.Send(new List.Query());
+            return HandleResult(await Mediator.Send(new List.Query()));
         }
 
         [HttpPost("Add")]
 
         public async Task<IActionResult> AddActivity(Activity act)
         {
-            return Ok(await Mediator.Send(new Create.Command { activity = act }));
+            return HandleResult(await Mediator.Send(new Create.Command { activity = act }));
         }
 
 
@@ -38,7 +38,7 @@ namespace API.Controllers
         {
             
             activity.Id = id;
-            return Ok(await Mediator.Send(new Edit.Command { activity = activity }));
+            return HandleResult(await Mediator.Send(new Edit.Command { activity = activity }));
         }
 
 
@@ -46,16 +46,19 @@ namespace API.Controllers
 
         public async Task<IActionResult> deleteActivity(Guid id)
         {
-            return Ok(await Mediator.Send(new Delete.Command { Id = id }));
+            return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
         }
 
       
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Activity>> GetAct(Guid id)
+        //IActionResult allows us to return response of http request
+        public async Task<IActionResult> GetAct(Guid id)
         {
-            return await Mediator.Send(new Details.Query { Id = id });
+            return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
+
+
         }
 
 

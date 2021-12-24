@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Application.Core;
+using Domain;
 using MediatR;
 using Persistence;
 using System;
@@ -7,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace Application.Activities
 {
-   public class Delete
+    public class Delete
     {
 
-        public class Command : IRequest
+        public class Command : IRequest<Result<Unit>>
 
         {
             public Guid Id { get; set; }
         }
 
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext datacontext;
 
@@ -26,19 +27,33 @@ namespace Application.Activities
                 datacontext = _datacontext;
             }
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+
+
+
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                Activity activity = datacontext.Activities.FindAsync(request.Id).Result;
+
+                Activity activity = await datacontext.Activities.FindAsync(request.Id);
+
+
+               // if (activity == null) return null;
 
                 datacontext.Activities.Remove(activity);
 
-                await datacontext.SaveChangesAsync();
+
+                var result = await datacontext.SaveChangesAsync() > 0;
+
+                if (!result)
+
+                    return Result<Unit>.Failure("Failed to delete the activity");
+
+                return Result<Unit>.Success(Unit.Value);
+            }
 
 
-                return Unit.Value;
-                    
-                    }
+
         }
-
     }
+
 }
+
