@@ -1,12 +1,8 @@
 ﻿using Application.Activities;
 using Domain;
-using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-using Persistence;
 using System;
-using System.Collections.Generic;
-
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -14,9 +10,8 @@ namespace API.Controllers
         public class ActivitiesController : BaseApiController
     {
        
-  
+   
         [HttpGet]
-
         public async Task<IActionResult> GetActivities()
         {
             return HandleResult(await Mediator.Send(new List.Query()));
@@ -49,7 +44,6 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
         }
 
-      
 
 
         [HttpGet("{id}")]

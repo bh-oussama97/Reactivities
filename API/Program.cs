@@ -1,4 +1,6 @@
+using Domain;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,10 +28,9 @@ namespace API
             {
                 var context = services.GetRequiredService<DataContext>();
                 //Create database if it does not exists
+                var userManager = services.GetRequiredService<UserManager<User>>();
                 await context.Database.MigrateAsync();
-
-                await Seed.SeedData(context);
-
+                await Seed.SeedData(context, userManager);
             }
 
             catch(Exception e)
