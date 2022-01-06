@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 namespace API.Controllers
 {
     [AllowAnonymous]
+    //allow anonymos attribute allow access by non-authenticated users to individual actions
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController : ControllerBase

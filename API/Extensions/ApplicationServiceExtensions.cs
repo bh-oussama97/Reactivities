@@ -1,5 +1,7 @@
 ﻿using Application.Activities;
 using Application.Core;
+using Application.Interfaces;
+using Infrastructure.Security;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +30,10 @@ namespace API.Extensions
 
 
             services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
+            //configuration for user accessor 
+            //you can access the current user from any place in application and get informations
+            services.AddScoped<IUserAccessor, UserAccessor>();
 
 
             return services;
