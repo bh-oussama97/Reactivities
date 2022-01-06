@@ -4,6 +4,7 @@ using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDTO>> Login(LoginDTO logindto)
         {
 
-            var user = await usermanager.FindByEmailAsync(logindto.Email);
+            var user = await usermanager.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.Email == logindto.Email);
 
             if (user == null) return Unauthorized();
 
@@ -93,7 +94,7 @@ namespace API.Controllers
         {
 
             //get the current user by the email stored in token 
-            var user = await usermanager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
+            var user = await usermanager.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
 
             return CreateUserObject(user);
         }
@@ -104,7 +105,7 @@ namespace API.Controllers
             return new UserDTO
             {
                 DisplayName = user.DisplayName,
-                Image = null,
+                Image = user?.Photos?.FirstOrDefault(x=> x.IsMain)?.Url,
                 Token = tokenservice.createToken(user),
                 Username = user.UserName
             };

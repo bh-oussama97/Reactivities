@@ -1,6 +1,7 @@
 ﻿using Application.Activities;
 using Application.Core;
 using Application.Interfaces;
+using Infrastructure.Photos;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,14 @@ namespace API.Extensions
             //configuration for user accessor 
             //you can access the current user from any place in application and get informations
             services.AddScoped<IUserAccessor, UserAccessor>();
+
+            //adding scoped for service photo accessor
+            services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+
+
+            //configuration for cloudinary api 
+            // getting the configuration section name from the AppSettings.json
+            services.Configure<CloudinarySettings>(configuration.GetSection("Cloudinary"));
 
 
             return services;
